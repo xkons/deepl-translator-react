@@ -1,24 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import useDebounce from './use-debounce';
 import './App.css';
-import TranslateForm from './components/TranslateForm';
+import TranslateForm, { LanguageOptions } from './components/TranslateForm';
+
+export interface DeeplLanguage {
+  /**
+   * e.g. ES, DE, Fr
+   */
+  language: string;
+  name: string;
+}
 
 function App() {
-  const initialLanguages = {
-    source: { label: 'German', code: 'DE' },
-    target: { label: 'English (American)', code: 'EN-US' }
+  const initialLanguages: { source: DeeplLanguage, target: DeeplLanguage } = {
+    source: { name: 'German', language: 'DE' },
+    target: { name: 'English (American)', language: 'EN-US' }
   }
   const [apiKey, setApiKey] = useState('');
   const [isApiKeyValid, setIsApiKeyValid] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState(initialLanguages);
-  const [languageOptions, setLanguageOptions] = useState({ source: [], target: []});
+  const [languageOptions, setLanguageOptions] = useState<LanguageOptions>({ source: [], target: []});
   const [query, setQuery] = useState('');
   const [translation, setTranslation] = useState('');
   const [isRequestPending, setIsRequestPending] = useState(false);
   const debouncedQuery = useDebounce(query, 500);
-  const onLanguagesChange = (newLanguages) => setActiveLanguages(newLanguages);
-  const onApiKeyChange = (value) => setApiKey(value);
-  const onInput = (text) => setQuery(text);
+  const onLanguagesChange = (newLanguages: { source: DeeplLanguage, target: DeeplLanguage }) => setActiveLanguages(newLanguages);
+  const onApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => setApiKey(event.target.value);
+  const onInput = (text: string) => setQuery(text);
 
   const onSubmitApiKey = useCallback(async () => {
     if (!validateApiKey(apiKey)) return
@@ -51,7 +59,7 @@ function App() {
   return (
     <div className="App">
       <main>
-        <label for="api-key">Enter your API key:</label>
+        <label htmlFor="api-key">Enter your API key:</label>
         <input id="api-key" type="text" onChange={onApiKeyChange}></input>
         <button onClick={onSubmitApiKey}>Submit</button>
         <TranslateForm {...translateFormProps}></TranslateForm>
@@ -61,15 +69,15 @@ function App() {
   );
 }
 
-function validateApiKey(apiKey) {
+function validateApiKey(apiKey: string) {
   return !!apiKey && apiKey.length > 3; // TODO: implement real world rules
 }
 
-function translate(apiKey, text, languages) {
+function translate(apiKey: string, text: string, languages: { source: DeeplLanguage, target: DeeplLanguage }) {
   const params = new URLSearchParams({
     'auth_key': `[${apiKey}]`,
-    'source_lang': languages.source.code,
-    'target_lang': languages.target.code,
+    'source_lang': languages.source.language,
+    'target_lang': languages.target.language,
     'text': text
   });
 
@@ -80,18 +88,21 @@ function translate(apiKey, text, languages) {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   }).then(r => r.json())
-    .then(response => response.translations.map((translation) => translation.text).join(' '))
+    .then((response: { translations: { detected_source_language: string; text: string;}[]}) => response.translations.map((translation) => translation.text).join(' '))
     .catch(error => {
       console.error(error);
       return 'Could not translate';
     });
 }
 
-function getSupportedLanguages(apiKey) {
-  return Promise.all([
+async function getSupportedLanguages(apiKey: string): Promise<[DeeplLanguage[], DeeplLanguage[]]> {
+  const [sourceLanguagesResponse, targetLanguagesResponse] = await Promise.all([
     fetch(`https://api.deepl.com/v2/languages?auth_key=[${apiKey}]&type=source`),
     fetch(`https://api.deepl.com/v2/languages?auth_key=[${apiKey}]&type=target`)
-  ]).then(([sourceResponse, targetResponse]) => [sourceResponse.json(), targetResponse.json()])
+  ]);
+  const sourceLanguages: DeeplLanguage[] = await sourceLanguagesResponse.json();
+  const targetLanguages: DeeplLanguage[] = await targetLanguagesResponse.json();
+  return [sourceLanguages, targetLanguages];
 }
 
 export default App;
