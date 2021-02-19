@@ -1,0 +1,6 @@
+.button_icon {
+    height: 12px;
+    margin: 2px;
+    transform: scale(1,-1);
+    width: 12px;
+}
