@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import useDebounce from './use-debounce';
-import './App.css';
 import TranslateForm, { LanguageOptions } from './components/TranslateForm';
 
 export interface DeeplLanguage {
