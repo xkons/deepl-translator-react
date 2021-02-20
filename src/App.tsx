@@ -5,7 +5,7 @@ import TranslateForm, { LanguageOptions } from './components/TranslateForm';
 
 export interface DeeplLanguage {
   /**
-   * e.g. ES, DE, Fr
+   * e.g. ES, DE, FR
    */
   language: string;
   name: string;
@@ -75,7 +75,7 @@ function validateApiKey(apiKey: string) {
 
 function translate(apiKey: string, text: string, languages: { source: DeeplLanguage, target: DeeplLanguage }) {
   const params = new URLSearchParams({
-    'auth_key': `[${apiKey}]`,
+    'auth_key': apiKey,
     'source_lang': languages.source.language,
     'target_lang': languages.target.language,
     'text': text
@@ -97,8 +97,8 @@ function translate(apiKey: string, text: string, languages: { source: DeeplLangu
 
 async function getSupportedLanguages(apiKey: string): Promise<[DeeplLanguage[], DeeplLanguage[]]> {
   const [sourceLanguagesResponse, targetLanguagesResponse] = await Promise.all([
-    fetch(`https://api.deepl.com/v2/languages?auth_key=[${apiKey}]&type=source`),
-    fetch(`https://api.deepl.com/v2/languages?auth_key=[${apiKey}]&type=target`)
+    fetch(`https://api.deepl.com/v2/languages?auth_key=${apiKey}&type=source`),
+    fetch(`https://api.deepl.com/v2/languages?auth_key=${apiKey}&type=target`)
   ]);
   const sourceLanguages: DeeplLanguage[] = await sourceLanguagesResponse.json();
   const targetLanguages: DeeplLanguage[] = await targetLanguagesResponse.json();
