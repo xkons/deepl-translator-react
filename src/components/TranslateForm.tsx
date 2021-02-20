@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 import { DeeplLanguage } from '../App';
 import './TranslateForm.css';
 
@@ -20,30 +22,49 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
     const outputTextareaValue = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         onInput(event.target.value);
     }
+    const [textAreaHeight, setTextAreaHeight] = useState(5)
 
     const reverseDirection = () => {
         onLanguagesChange({ source: activeLanguages.target, target: activeLanguages.source });
     }
+    const onHeightChange = (height: number) => setTextAreaHeight(height);
+
+    const targetTextAreaStyle = {
+        height: textAreaHeight
+    };
 
     return (
-        <div>
-            <div className="languages_container">
-                <strong>{activeLanguages.source.name}</strong>
-                <button onClick={reverseDirection}  disabled={disabled}>
-                    <svg className="button_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M43 171l85 85v-64h320v-43h-320v-64zM469 341l-85 -85v64h-320v43h320v64z"></path></svg>
+        <div className="container mx-auto px-4 w-full">
+            <div className="flex flex-row justify-center flex-nowrap mb-2">
+                <strong className="flex-1 flex-start">{activeLanguages.source.name}</strong>
+                <button className="flex-none" onClick={reverseDirection}  disabled={disabled}>
+                    <svg className="button_icon fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M43 171l85 85v-64h320v-43h-320v-64zM469 341l-85 -85v64h-320v43h320v64z"></path></svg>
                 </button>
-                <strong>{activeLanguages.target.name}</strong>
+                <strong className="flex-1 flex-end">{activeLanguages.target.name}</strong>
             </div>
-            <div className="language_container language_container--origin">
-                <div className="lmt__textarea_container">
-                    <textarea value={query} onChange={outputTextareaValue} disabled={disabled} className="lmt__textarea lmt__source_textarea lmt__textarea_base_style" data-gramm_editor="false" autoComplete="off" lang="en-EN">
-                    </textarea>
+            <div className="flex flex-col md:flex-row justify-center place-items-center">
+                <div className="flex-grow w-full">
+                    <TextareaAutosize 
+                      minRows={5}
+                      onHeightChange={onHeightChange}
+                      value={query}
+                      onChange={outputTextareaValue}
+                      disabled={disabled}
+                      className="dark:bg-gray-600 w-full"
+                      autoComplete="off"
+                      lang={activeLanguages.source.language}
+                    />
                 </div>
-            </div>
-            <div className="language_container language_container--target">
-                <div className="lmt__textarea_container">
-                    <textarea value={translation} readOnly={true} disabled={disabled} className="lmt__textarea lmt__source_textarea lmt__textarea_base_style" data-gramm_editor="false" autoComplete="off" lang="en-EN">
-                    </textarea>
+                <div className="flex-grow w-full">
+                    <TextareaAutosize
+                        minRows={5}
+                        style={targetTextAreaStyle}
+                        value={translation}
+                        readOnly={true}
+                        className="dark:bg-gray-700 w-full"
+                        autoComplete="off"
+                        lang={activeLanguages.target.language}
+                    />
                 </div>
             </div>
         </div>
