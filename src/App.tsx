@@ -11,12 +11,15 @@ export interface DeeplLanguage {
   name: string;
 }
 
+const API_KEY_LOCAL_STORAGE_KEY = 'deepl_apikey';
+
 function App() {
   const initialLanguages: { source: DeeplLanguage, target: DeeplLanguage } = {
     source: { name: 'German', language: 'DE' },
     target: { name: 'English (American)', language: 'EN-US' }
   }
-  const [apiKey, setApiKey] = useState('');
+  const apiKeyFromLocalStorage = localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
+  const [apiKey, setApiKey] = useState(apiKeyFromLocalStorage ?? '');
   const [isApiKeyValid, setIsApiKeyValid] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState(initialLanguages);
   const [languageOptions, setLanguageOptions] = useState<LanguageOptions>({ source: [], target: []});
@@ -38,6 +41,7 @@ function App() {
     try {
       const [sourceLanguages, targetLanguages] = await getSupportedLanguages(apiKey);
       setLanguageOptions({ source: sourceLanguages, target: targetLanguages });
+      localStorage.setItem(API_KEY_LOCAL_STORAGE_KEY, apiKey);
       setIsApiKeyValid(true);
     } catch (error) {
       console.error(error);
