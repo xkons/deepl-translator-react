@@ -28,11 +28,11 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
     return (
         <div>
             <div className="languages_container">
-                <span>Übersetze </span><strong>{activeLanguages.source.name}</strong>
+                <strong>{activeLanguages.source.name}</strong>
                 <button onClick={reverseDirection}  disabled={disabled}>
                     <svg className="button_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M43 171l85 85v-64h320v-43h-320v-64zM469 341l-85 -85v64h-320v43h320v64z"></path></svg>
                 </button>
-                <span>Nach </span><strong>{activeLanguages.target.name}</strong>
+                <strong>{activeLanguages.target.name}</strong>
             </div>
             <div className="language_container language_container--origin">
                 <div className="lmt__textarea_container">
