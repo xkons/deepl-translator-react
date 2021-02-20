@@ -65,20 +65,22 @@ function App() {
   );
 
   const apiKeyForm = (
-    <form onSubmit={onSubmitApiKey}>
-      <label htmlFor="api-key">Enter your API key:</label>
-      <input id="api-key" type="text" value={apiKey} onChange={onApiKeyChange} required></input>
-      <input type="submit" value="Save"></input>
+    <form className="mt-4 px-6 flex flex-col sm:flex-row sm:flex-nowrap justify-center place-items-center" onSubmit={onSubmitApiKey}>
+      <label htmlFor="api_key" className="mr-2 mb-2 text-center sm:mb-0">Enter your API key:</label>
+      <input className="border w-5/6 sm:w-80 py-1 px-2 text-sm text-gray-900 rounded-lg" id="api_key" name="api_key" type="text" value={apiKey} onChange={onApiKeyChange} required></input>
+      <input type="submit" value="Save" className="btn mt-2 mx-2  sm:mt-0"></input>
     </form>
   )
 
   const translateFormProps = { activeLanguages, languageOptions, query, translation, disabled: !isApiKeyValid, onLanguagesChange, onInput };
   return (
-    <div className="App">
+    <div className="text-center">
       <main>
-        {isApiKeyValid ? <p>Using API key {apiKey.substr(0,3)}...<button onClick={onEditApiKey}>Edit</button></p> : apiKeyForm}
-        <TranslateForm {...translateFormProps}></TranslateForm>
-        {isRequestPending && <div>Translating ...</div>}
+        {isApiKeyValid ? <p className="mt-4">Using API key {apiKey.substr(0,3)}...<button className="btn ml-2" onClick={onEditApiKey}>Edit</button></p> : apiKeyForm}
+        <div className="mt-4">
+          <TranslateForm {...translateFormProps}></TranslateForm>
+        </div>
+        {isRequestPending && <p>Translating ...</p>}
       </main>
     </div>
   );
