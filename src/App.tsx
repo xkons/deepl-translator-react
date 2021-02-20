@@ -26,7 +26,29 @@ function App() {
   const [translation, setTranslation] = useState('');
   const [isRequestPending, setIsRequestPending] = useState(false);
   const debouncedQuery = useDebounce(query, 500);
-  const onLanguagesChange = (newLanguages: { source: DeeplLanguage, target: DeeplLanguage }) => setActiveLanguages(newLanguages);
+  const onLanguagesChange = (newLanguages: { source: DeeplLanguage, target: DeeplLanguage }) => {
+    // the region specific versions of a language are only supported as target, not as source
+    if (['EN-GB', 'EN-US'].includes(newLanguages.source.language)) {
+      newLanguages.source.language = 'EN'; 
+      newLanguages.source.name = 'English';
+    } else if (['PT-PT', 'PT-BR'].includes(newLanguages.source.language)) {
+      newLanguages.source.language = 'PT';
+      newLanguages.source.name = 'Portuguese';
+    }
+
+    if (newLanguages.target.language === 'EN') {
+      newLanguages.target.language = 'EN-GB';
+      newLanguages.target.name = 'English (British)';
+    } else if (newLanguages.target.language === 'PT') {
+      newLanguages.target.language = 'PT-PT';
+      newLanguages.target.language = 'Portuguese (European)';
+    }
+
+    setActiveLanguages(newLanguages);
+    translate(apiKey, query, newLanguages).then(translation => {
+      setTranslation(translation)
+    })
+  }
   const onApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => setApiKey(event.target.value);
   const onInput = (text: string) => setQuery(text);
 
@@ -97,6 +119,7 @@ function translate(apiKey: string, text: string, languages: { source: DeeplLangu
     'target_lang': languages.target.language,
     'text': text
   });
+  //return Promise.resolve('Hello ' + text);
 
   return fetch('https://api.deepl.com/v2/translate', {
     method: 'POST',

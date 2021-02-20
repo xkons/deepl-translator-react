@@ -28,19 +28,48 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
         onLanguagesChange({ source: activeLanguages.target, target: activeLanguages.source });
     }
     const onHeightChange = (height: number) => setTextAreaHeight(height);
+    const onSourceLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const language = event.target.value;
+        if (language === activeLanguages.source.language) {
+            return;
+        }
+        const newSourceLanguage = languageOptions.source.find((langOpt) => langOpt.language === language);
+        onLanguagesChange({ source: newSourceLanguage, target: activeLanguages.target });
+    }
+    const onTargetLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const language = event.target.value;
+        if (language === activeLanguages.target.language) {
+            return;
+        }
+        const newTargetLanguage = languageOptions.target.find((langOpt) => langOpt.language === language);
+        onLanguagesChange({ source: activeLanguages.source, target: newTargetLanguage });
+    }
 
     const targetTextAreaStyle = {
         height: textAreaHeight
     };
 
+    const sourceOptions = languageOptions.source.map((language) => (<option key={'source-' + language.language} value={language.language}>{language.name}</option>))
+    const targetOptions = languageOptions.target.map((language) => (<option key={'target-' + language.language} value={language.language}>{language.name}</option>))
+
     return (
         <div className="container mx-auto px-4 w-full">
             <div className="flex flex-row justify-center flex-nowrap mb-2">
-                <strong className="flex-1 flex-start">{activeLanguages.source.name}</strong>
-                <button className="flex-none" onClick={reverseDirection}  disabled={disabled}>
+                <select className="flex-1 flex-start dark:bg-gray-800"
+                        name="source-lang"
+                        value={activeLanguages.source.language}
+                        onChange={onSourceLanguageChange}>
+                    {sourceOptions}
+                </select>
+                <button className="flex-none mx-4" onClick={reverseDirection}  disabled={disabled}>
                     <svg className="button_icon fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M43 171l85 85v-64h320v-43h-320v-64zM469 341l-85 -85v64h-320v43h320v64z"></path></svg>
                 </button>
-                <strong className="flex-1 flex-end">{activeLanguages.target.name}</strong>
+                <select className="flex-1 flex-end  dark:bg-gray-800"
+                        name="target-lang"
+                        value={activeLanguages.target.language}
+                        onChange={onTargetLanguageChange}>
+                    {targetOptions}
+                </select>
             </div>
             <div className="flex flex-col md:flex-row justify-center place-items-center">
                 <div className="flex-grow w-full">
