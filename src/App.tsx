@@ -28,14 +28,20 @@ function App() {
   const onApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => setApiKey(event.target.value);
   const onInput = (text: string) => setQuery(text);
 
-  const onSubmitApiKey = useCallback(async () => {
-    if (!validateApiKey(apiKey)) return
+  const onEditApiKey = () => setIsApiKeyValid(false);
+
+  const onSubmitApiKey = useCallback(async (event) => {
+    event.preventDefault();
+    if (!validateApiKey(apiKey)) {
+      return setApiKey('Needs to be 36 characters');
+    }
     try {
       const [sourceLanguages, targetLanguages] = await getSupportedLanguages(apiKey);
       setLanguageOptions({ source: sourceLanguages, target: targetLanguages });
       setIsApiKeyValid(true);
     } catch (error) {
       console.error(error);
+      setApiKey('Invalid API key');
       setIsApiKeyValid(false);
     }
   }, [apiKey]);
@@ -55,13 +61,19 @@ function App() {
     [debouncedQuery]
   );
 
+  const apiKeyForm = (
+    <form onSubmit={onSubmitApiKey}>
+      <label htmlFor="api-key">Enter your API key:</label>
+      <input id="api-key" type="text" value={apiKey} onChange={onApiKeyChange} required></input>
+      <input type="submit" value="Save"></input>
+    </form>
+  )
+
   const translateFormProps = { activeLanguages, languageOptions, query, translation, disabled: !isApiKeyValid, onLanguagesChange, onInput };
   return (
     <div className="App">
       <main>
-        <label htmlFor="api-key">Enter your API key:</label>
-        <input id="api-key" type="text" onChange={onApiKeyChange}></input>
-        <button onClick={onSubmitApiKey}>Submit</button>
+        {isApiKeyValid ? <p>Using API key {apiKey.substr(0,3)}...<button onClick={onEditApiKey}>Edit</button></p> : apiKeyForm}
         <TranslateForm {...translateFormProps}></TranslateForm>
         {isRequestPending && <div>Translating ...</div>}
       </main>
@@ -70,7 +82,7 @@ function App() {
 }
 
 function validateApiKey(apiKey: string) {
-  return !!apiKey && apiKey.length > 3; // TODO: implement real world rules
+  return !!apiKey && apiKey.length === 36;
 }
 
 function translate(apiKey: string, text: string, languages: { source: DeeplLanguage, target: DeeplLanguage }) {
