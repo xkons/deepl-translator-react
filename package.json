@@ -2,6 +2,7 @@
   "name": "deepl-translator",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://www.xkons.de/deepl",
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@testing-library/jest-dom": "^5.11.9",
@@ -21,7 +22,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "cracp build",
+    "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
