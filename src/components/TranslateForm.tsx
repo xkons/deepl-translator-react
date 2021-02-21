@@ -62,7 +62,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
                         onChange={onSourceLanguageChange}>
                     {sourceOptions}
                 </select>
-                <button className="flex-none mx-4" onClick={reverseDirection}  disabled={disabled}>
+                <button className="flex-none mx-2 px-2" onClick={reverseDirection}  disabled={disabled}>
                     <svg className="button_icon fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M43 171l85 85v-64h320v-43h-320v-64zM469 341l-85 -85v64h-320v43h320v64z"></path></svg>
                 </button>
                 <select className="flex-1 flex-end  dark:bg-gray-800 p-2 border border-gray-500 rounded"
