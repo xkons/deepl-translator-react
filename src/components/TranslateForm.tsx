@@ -93,6 +93,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
                         value={translation}
                         readOnly={true}
                         disabled={disabled}
+                        placeholder="Translation"
                         className="dark:bg-gray-700 p-2 w-full border border-gray-500 rounded"
                         autoComplete="off"
                         lang={activeLanguages.target.language}
