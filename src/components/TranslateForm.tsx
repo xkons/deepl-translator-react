@@ -81,7 +81,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
                       onChange={outputTextareaValue}
                       disabled={disabled}
                       placeholder="Enter or paste text to translate"
-                      className="dark:bg-gray-600 p-2 w-full border border-gray-500 rounded"
+                      className="dark:bg-gray-600 p-2 w-full border border-gray-500 rounded resize-none"
                       autoComplete="off"
                       lang={activeLanguages.source.language}
                     />
@@ -93,7 +93,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
                         readOnly={true}
                         disabled={disabled}
                         placeholder="Translation"
-                        className="dark:bg-gray-700 p-2 w-full border border-gray-500 rounded"
+                        className="dark:bg-gray-700 p-2 w-full border border-gray-500 rounded resize-none"
                         autoComplete="off"
                         lang={activeLanguages.target.language}
                     ></textarea>
