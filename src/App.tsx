@@ -15,7 +15,7 @@ const API_KEY_LOCAL_STORAGE_KEY = 'deepl_apikey';
 function App() {
   const initialLanguages: { source: DeeplLanguage, target: DeeplLanguage } = {
     source: { name: 'German', language: 'DE' },
-    target: { name: 'English (American)', language: 'EN-US' }
+    target: { name: 'English (American)', language: 'EN-GB' }
   }
   const apiKeyFromLocalStorage = localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
   const [apiKey, setApiKey] = useState(apiKeyFromLocalStorage ?? '');
