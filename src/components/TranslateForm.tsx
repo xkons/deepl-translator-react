@@ -26,6 +26,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
 
     const reverseDirection = () => {
         onLanguagesChange({ source: activeLanguages.target, target: activeLanguages.source });
+        onInput(translation);
     }
     const onHeightChange = (height: number) => setTextAreaHeight(height);
     const onSourceLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
