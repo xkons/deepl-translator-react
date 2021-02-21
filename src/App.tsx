@@ -45,9 +45,12 @@ function App() {
     }
 
     setActiveLanguages(newLanguages);
-    translate(apiKey, query, newLanguages).then(translation => {
-      setTranslation(translation)
-    })
+    if (query && query.length > 0) {
+      translate(apiKey, query, newLanguages).then(translation => {
+        setTranslation(translation)
+      })
+    }
+    
   }
   const onApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => setApiKey(event.target.value);
   const onInput = (text: string) => setQuery(text);
