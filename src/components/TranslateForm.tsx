@@ -87,8 +87,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
                     />
                 </div>
                 <div className="flex-grow w-full">
-                    <TextareaAutosize
-                        minRows={5}
+                    <textarea
                         style={targetTextAreaStyle}
                         value={translation}
                         readOnly={true}
@@ -97,7 +96,7 @@ const TranslateForm = ({ query, translation, activeLanguages, languageOptions, d
                         className="dark:bg-gray-700 p-2 w-full border border-gray-500 rounded"
                         autoComplete="off"
                         lang={activeLanguages.target.language}
-                    />
+                    ></textarea>
                 </div>
             </div>
         </div>
