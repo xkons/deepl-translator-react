@@ -4,3 +4,7 @@
     transform: scale(1,-1);
     width: 16px;
 }
+
+textarea {
+    resize: none;
+}
