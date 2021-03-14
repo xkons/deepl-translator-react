@@ -13,6 +13,7 @@ The main motivation being that the official [deepl translation form](https://www
 - bring your own API key
 - native HTML select for langauge selection
 - switch translation direction button (like Google Translate)
+- last valid API key is stored in localStorage
 
 **Pending improvements:**
 - Add more tests
