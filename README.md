@@ -2,6 +2,9 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+<img width="950" alt="app-screenshot" src="https://user-images.githubusercontent.com/15232701/111081478-d206f700-8503-11eb-8d18-644456eaa046.png">
+
+
 I built this deepl client to practice the latest react tools and features.
 
 The main motivation being that the official [deepl translation form](https://www.deepl.com/translator) does not have a "switch translation direction" like Google Translate does.
