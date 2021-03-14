@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import useDebounce from './use-debounce';
 import TranslateForm, { LanguageOptions } from './components/TranslateForm';
+import ApiKeyForm, { API_KEY_LOCAL_STORAGE_KEY } from './components/ApiKeyForm';
 
 export interface DeeplLanguage {
   /**
@@ -10,13 +11,12 @@ export interface DeeplLanguage {
   name: string;
 }
 
-const API_KEY_LOCAL_STORAGE_KEY = 'deepl_apikey';
-
 function App() {
   const initialLanguages: { source: DeeplLanguage, target: DeeplLanguage } = {
     source: { name: 'German', language: 'DE' },
     target: { name: 'English (American)', language: 'EN-GB' }
   }
+  
   const apiKeyFromLocalStorage = localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
   const [apiKey, setApiKey] = useState(apiKeyFromLocalStorage ?? '');
   const [isApiKeyValid, setIsApiKeyValid] = useState(false);
@@ -52,27 +52,7 @@ function App() {
     }
     
   }
-  const onApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => setApiKey(event.target.value);
   const onInput = (text: string) => setQuery(text);
-
-  const onEditApiKey = () => setIsApiKeyValid(false);
-
-  const onSubmitApiKey = useCallback(async (event) => {
-    event.preventDefault();
-    if (!validateApiKey(apiKey)) {
-      return setApiKey('Needs to be 36 characters');
-    }
-    try {
-      const [sourceLanguages, targetLanguages] = await getSupportedLanguages(apiKey);
-      setLanguageOptions({ source: sourceLanguages, target: targetLanguages });
-      localStorage.setItem(API_KEY_LOCAL_STORAGE_KEY, apiKey);
-      setIsApiKeyValid(true);
-    } catch (error) {
-      console.error(error);
-      setApiKey('Invalid API key');
-      setIsApiKeyValid(false);
-    }
-  }, [apiKey]);
 
   useEffect(
     () => {
@@ -89,19 +69,21 @@ function App() {
     [debouncedQuery]
   );
 
-  const apiKeyForm = (
-    <form className="mt-4 px-6 flex flex-col sm:flex-row sm:flex-nowrap justify-center place-items-center" onSubmit={onSubmitApiKey}>
-      <label htmlFor="api_key" className="mr-2 mb-2 text-center sm:mb-0">Enter your API key:</label>
-      <input className="border w-5/6 sm:w-80 py-1 px-2 text-sm text-gray-900 rounded-lg" id="api_key" name="api_key" type="text" value={apiKey} onChange={onApiKeyChange} required></input>
-      <input type="submit" value="Save" className="btn mt-2 mx-2  sm:mt-0"></input>
-    </form>
-  )
+  const translateFormProps = {
+    activeLanguages,
+    languageOptions,
+    query,
+    translation,
+    disabled: !isApiKeyValid,
+    onLanguagesChange,
+    onInput
+  };
+  const apiKeyFormProps = { apiKey, setApiKey, isApiKeyValid, setIsApiKeyValid, setLanguageOptions };
 
-  const translateFormProps = { activeLanguages, languageOptions, query, translation, disabled: !isApiKeyValid, onLanguagesChange, onInput };
   return (
     <div className="text-center">
       <main>
-        {isApiKeyValid ? <p className="mt-4">Using API key {apiKey.substr(0,3)}...<button className="btn ml-2" onClick={onEditApiKey}>Edit</button></p> : apiKeyForm}
+        <ApiKeyForm {...apiKeyFormProps}/>
         <div className="mt-4">
           <TranslateForm {...translateFormProps}></TranslateForm>
         </div>
@@ -111,10 +93,6 @@ function App() {
   );
 }
 
-function validateApiKey(apiKey: string) {
-  return !!apiKey && apiKey.length === 36;
-}
-
 function translate(apiKey: string, text: string, languages: { source: DeeplLanguage, target: DeeplLanguage }) {
   const params = new URLSearchParams({
     'auth_key': apiKey,
@@ -122,7 +100,6 @@ function translate(apiKey: string, text: string, languages: { source: DeeplLangu
     'target_lang': languages.target.language,
     'text': text
   });
-  //return Promise.resolve('Hello ' + text);
 
   return fetch('https://api.deepl.com/v2/translate', {
     method: 'POST',
@@ -136,16 +113,6 @@ function translate(apiKey: string, text: string, languages: { source: DeeplLangu
       console.error(error);
       return 'Could not translate';
     });
-}
-
-async function getSupportedLanguages(apiKey: string): Promise<[DeeplLanguage[], DeeplLanguage[]]> {
-  const [sourceLanguagesResponse, targetLanguagesResponse] = await Promise.all([
-    fetch(`https://api.deepl.com/v2/languages?auth_key=${apiKey}&type=source`),
-    fetch(`https://api.deepl.com/v2/languages?auth_key=${apiKey}&type=target`)
-  ]);
-  const sourceLanguages: DeeplLanguage[] = await sourceLanguagesResponse.json();
-  const targetLanguages: DeeplLanguage[] = await targetLanguagesResponse.json();
-  return [sourceLanguages, targetLanguages];
 }
 
 export default App;
