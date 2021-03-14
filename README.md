@@ -1,6 +1,34 @@
-# Getting Started with Create React App
+# DeepL Translator
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+I built this deepl client to practice the latest react tools and features.
+
+The main motivation being that the official [deepl translation form](https://www.deepl.com/translator) does not have a "switch translation direction" like Google Translate does.
+
+**Features:**
+- Light & Dark mode
+- responsive UI
+- the textareas grow together with the input (thx to [react-textarea-autosize](https://github.com/Andarist/react-textarea-autosize#readme))
+- bring your own API key
+- native HTML select for langauge selection
+- switch translation direction button (like Google Translate)
+
+**Pending improvements:**
+- Add more tests
+- Support "detect language" for source language (the deepl API translate endpoint always returns the detected language)
+- Larger initial font size inside textareas, which shrinks as the text grows
+
+**Technologies used:**
+- [react](https://reactjs.org/)
+- [tailwindcss](https://tailwindcss.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [React Testing library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Mock Service Worker](https://mswjs.io/)
+
+**Helpful resources:**
+
+[Install Tailwind CSS with Create React App](https://tailwindcss.com/docs/guides/create-react-app) is the official tailwind guide on how to install it inside the Create React App and also made me introduce [craco](https://github.com/gsoft-inc/craco) in this repository for easier custom configuration.
 
 ## Available Scripts
 
